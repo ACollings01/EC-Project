@@ -22,12 +22,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private int charisma;
 
+    [SerializeField]
+    private int hitPoints = 100;
+
     private GameObject player;
     private RaycastHit hit;
     private Ray ray;
     private Vector3 direction;
     private NavMeshAgent agent;
     private Animator anim;
+
+    private bool isRunning;
+    private bool isWaving;
 
     // Start is called before the first frame update
     void Start()
@@ -49,13 +55,79 @@ public class PlayerController : MonoBehaviour
 
         agent.SetDestination(target.position);
 
-        anim.SetBool("isWalking", !AtGoal());
+        UpdateAnimation();
+
+        HandleActions();
+    }
+
+    void UpdateAnimation()
+    {
+        // Makes sure the player isn't dead if they regain HP
+        if (hitPoints > 0)
+        {
+            anim.SetBool("isDead", false);
+        }
+
+        // Handles changes in animations
+        if (hitPoints <= 0)
+        {
+            anim.SetBool("isDead", true);
+            anim.SetBool("isIdle", false);
+            anim.SetBool("isWalking", false);
+            anim.SetBool("isRunning", false);
+            anim.SetBool("isWaving", false);
+        }
+        else if (isWaving)
+        {
+            anim.SetBool("isIdle", false);
+            anim.SetBool("isWalking", false);
+            anim.SetBool("isRunning", false);
+            anim.SetBool("isWaving", true);
+        }
+        else if (AtGoal())
+        {
+            anim.SetBool("isIdle", true);
+            anim.SetBool("isWalking", false);
+            anim.SetBool("isRunning", false);
+            anim.SetBool("isWaving", false);
+        }
+        else if (!AtGoal() && !isRunning)
+        {
+            agent.speed = 2.8f;
+            anim.SetBool("isIdle", false);
+            anim.SetBool("isWalking", true);
+            anim.SetBool("isRunning", false);
+            anim.SetBool("isWaving", false);
+        }
+        else if (!AtGoal() && isRunning)
+        {
+            agent.speed = 5;
+            anim.SetBool("isIdle", false);
+            anim.SetBool("isWalking", false);
+            anim.SetBool("isRunning", true);
+            anim.SetBool("isWaving", false);
+        }
+    }
+
+    private void HandleActions()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            isRunning = !isRunning;
+        }
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            target.position = player.transform.position;
+            isWaving = !isWaving;
+            
+        }
     }
 
     private void MoveTarget()
     {
         if (Input.GetKey("mouse 1"))
         {
+            isWaving = false;
             if (Physics.Raycast(ray, out hit, 1000, layerMask, QueryTriggerInteraction.Ignore))
             {
                 if (hit.point != target.position)
