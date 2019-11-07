@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public GameObject player;
-    public float maxZoom = 30;
+    public float maxZoom = 10;
     private float zoom;
 
     private void Start()
@@ -20,7 +20,7 @@ public class CameraController : MonoBehaviour
         transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 18, player.transform.position.z - 10);
         transform.LookAt(player.transform);
 
-        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y - zoom, transform.localPosition.z + zoom);
+        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y - zoom, transform.localPosition.z + ((18 / 10) * zoom));
     }
 
     void AdjustZoom(float amount)
@@ -30,13 +30,19 @@ public class CameraController : MonoBehaviour
         {
             zoom += amount;
         }
-        else if (amount < 0 && zoom > 1)
+        else if (amount < 0 && zoom > 0)
         {
             zoom += amount;
         }
 
         // Checking that zoom hasn't gone past bounds
-        zoom = zoom > maxZoom ? maxZoom : zoom;
-        zoom = zoom < 1 ? 1 : zoom;
+        if (zoom > maxZoom)
+        {
+            zoom = maxZoom;
+        }
+        else if (zoom < 0)
+        {
+            zoom = 0;
+        }
     }
 }
