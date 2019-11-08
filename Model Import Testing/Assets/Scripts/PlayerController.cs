@@ -5,7 +5,8 @@ using UnityEngine.AI;
 
 public class PlayerController : MonoBehaviour
 {
-    public Transform target;
+    public GameObject target;
+    private ParticleSystem targetParticles;
     public LayerMask layerMask;
     public float accuracy = 0.1f;
 
@@ -41,7 +42,9 @@ public class PlayerController : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("PlayerModel");
         anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
-        target.position = transform.position;
+        target.transform.position = transform.position;
+        targetParticles = target.GetComponent<ParticleSystem>();
+        targetParticles.Stop();
     }
 
     // Update is called once per frame
@@ -53,7 +56,7 @@ public class PlayerController : MonoBehaviour
 
         MoveTarget();
 
-        agent.SetDestination(target.position);
+        agent.SetDestination(target.transform.position);
 
         UpdateAnimation();
 
@@ -101,7 +104,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (!AtGoal() && isRunning)
         {
-            agent.speed = 5;
+            agent.speed = 7.5f;
             anim.SetBool("isIdle", false);
             anim.SetBool("isWalking", false);
             anim.SetBool("isRunning", true);
@@ -117,7 +120,7 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
-            target.position = player.transform.position;
+            target.transform.position = player.transform.position;
             isWaving = !isWaving;
             
         }
@@ -130,25 +133,26 @@ public class PlayerController : MonoBehaviour
             isWaving = false;
             if (Physics.Raycast(ray, out hit, 1000, layerMask, QueryTriggerInteraction.Ignore))
             {
-                if (hit.point != target.position)
+                if (hit.point != target.transform.position)
                 {
-                    target.position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+                    target.transform.position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+                    targetParticles.Play();
                 }
             }
         }
 
         if (Input.GetKey("s"))
         {
-            target.position = player.transform.position;
+            target.transform.position = player.transform.position;
         }
 
         // Account for changes in player's y
-        target.position = new Vector3(target.position.x, target.position.y, target.position.z);
+        target.transform.position = new Vector3(target.transform.position.x, target.transform.position.y, target.transform.position.z);
     }
 
     private bool AtGoal()
     {
-        if ((transform.position - target.position).magnitude <= accuracy)
+        if ((transform.position - target.transform.position).magnitude <= accuracy)
         {
             return true;
         }

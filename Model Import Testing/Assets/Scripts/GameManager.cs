@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public GameManager gameManager;
-
+    public static GameManager gameManager;
+    
     private GameObject player;
     private PlayerController playerController;
 
@@ -30,19 +31,15 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetActiveScene().name == "Main")
-        {
-            Debug.Log("Strength: " + playerController.GetSTR());
-            Debug.Log("Dexterity: " + playerController.GetDEX());
-            Debug.Log("Constitution: " + playerController.GetCON());
-            Debug.Log("Intelligence: " + playerController.GetINT());
-            Debug.Log("Wisdom: " + playerController.GetWIS());
-            Debug.Log("Charisma: " + playerController.GetCHA());
-        }
+        
     }
 
     public void GoToScene(string scene)
     {
         SceneManager.LoadScene(scene);
+        if (scene != "CharacterCustomization")
+        {
+            UIManager.uiManager.InGameScene();
+        }
     }
 }
