@@ -5,44 +5,37 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public GameObject player;
-    public float maxZoom = 10;
-    private float zoom;
+    private float maxZoom = 8.0f;
+	private float zoom = 0.0f;
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("PlayerModel");
-    }
+
+		transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 18, player.transform.position.z - 10);
+		transform.LookAt(player.transform);
+	}
 
     // Update is called once per frame
     void Update()
     {
         AdjustZoom(Input.mouseScrollDelta.y);
-        transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 18, player.transform.position.z - 10);
-        transform.LookAt(player.transform);
+		ConstrainZoom();
+        transform.localPosition = new Vector3(player.transform.position.x, player.transform.position.y + 18 - (1.8f * zoom), player.transform.position.z - 10 + zoom);
+		transform.LookAt(player.transform);
+	}
 
-        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y - zoom, transform.localPosition.z + ((18 / 10) * zoom));
-    }
+	void AdjustZoom(float amount)
+	{
+		if ((zoom < maxZoom && amount > 0) || (zoom > 0 && amount < 0))
+		{
+			zoom += amount;
+		}
+	}
 
-    void AdjustZoom(float amount)
-    {
-        // Adjusting zoom variable
-        if (amount > 0 && zoom < maxZoom)
-        {
-            zoom += amount;
-        }
-        else if (amount < 0 && zoom > 0)
-        {
-            zoom += amount;
-        }
-
-        // Checking that zoom hasn't gone past bounds
-        if (zoom > maxZoom)
-        {
-            zoom = maxZoom;
-        }
-        else if (zoom < 0)
-        {
-            zoom = 0;
-        }
-    }
+	void ConstrainZoom()
+	{
+		zoom = zoom > maxZoom ? maxZoom : zoom;
+		zoom = zoom < 0 ? 0 : zoom;
+	}
 }
