@@ -1,14 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager uiManager;
     public GameObject inGameUI;
     public GameObject charCustUI;
-
     public GameObject equipmentUI;
+	public GameObject externalInvUI;
+
+	public Button[] invSlots;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,4 +54,15 @@ public class UIManager : MonoBehaviour
         charCustUI.SetActive(false);
         inGameUI.SetActive(true);
     }
+
+	public void OpenExternalInventory(Item[] items)
+	{
+		externalInvUI.SetActive(true);
+
+		// Opens the ExternalInventory panel object and fills it with the items given
+		for (int i = 0; i < items.Length; i++)
+		{
+			invSlots[i].image.sprite = items[i].sprite;
+		}
+	}
 }

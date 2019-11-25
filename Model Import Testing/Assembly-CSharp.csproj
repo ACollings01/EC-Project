@@ -64,12 +64,13 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\CharacterCreationManager.cs" />
-    <Compile Include="Assets\Scripts\DraggableUI.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
-    <Compile Include="Assets\Scripts\InteractableObject.cs" />
+    <Compile Include="Assets\Scripts\Item.cs" />
+    <Compile Include="Assets\Scripts\ObjectInventory.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\PlayerManager.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
+    <Compile Include="Assets\Scripts\UIObject.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Project/Project Repository/Model Import Testing/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
